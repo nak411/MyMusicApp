@@ -8,6 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
@@ -17,6 +18,7 @@ class SongListViewModel @Inject constructor(
  ): ViewModel() {
 
     fun fetchSongs() {
+        Timber.d("/// Calling fetch songs")
         viewModelScope.launch(ioDispatcher) {
             musicRepository.getSongs()
         }

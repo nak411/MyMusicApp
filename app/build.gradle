@@ -52,6 +52,11 @@ dependencies {
 
     implementation 'com.jakewharton.timber:timber:5.0.1'
 
+    def activity_version = "1.5.1"
+    implementation "androidx.activity:activity-ktx:$activity_version"
+    // Kotlin
+    implementation "androidx.fragment:fragment-ktx:1.5.2"
+
     implementation 'androidx.core:core-ktx:1.8.0'
     implementation 'androidx.appcompat:appcompat:1.5.0'
     implementation 'com.google.android.material:material:1.6.1'

@@ -1,13 +1,11 @@
-package com.naveed.mymusicapp.features.songlist.data.api
+package com.naveed.mymusicapp.features.songlist.data.data_sources.local
 
 import com.naveed.mymusicapp.features.songlist.data.data_sources.MusicDataSource
 import com.naveed.mymusicapp.features.songlist.data.model.Song
 
-class MusicRepositoryImpl(
-    private val localDataSource: MusicDataSource
-): MusicRepository {
+class DeviceStorageMusicDataSource: MusicDataSource {
 
     override suspend fun getSongs(): Result<List<Song>> {
-        return localDataSource.getSongs()
+        TODO("Not yet implemented")
     }
 }

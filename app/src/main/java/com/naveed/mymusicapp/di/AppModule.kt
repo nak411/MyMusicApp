@@ -1,5 +1,6 @@
 package com.naveed.mymusicapp.di
 
+import android.content.Context
 import com.naveed.mymusicapp.features.songlist.data.api.MusicRepository
 import com.naveed.mymusicapp.features.songlist.data.api.MusicRepositoryImpl
 import com.naveed.mymusicapp.features.songlist.data.data_sources.MusicDataSource
@@ -7,6 +8,7 @@ import com.naveed.mymusicapp.features.songlist.data.data_sources.local.DeviceSto
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Named
 import javax.inject.Singleton
@@ -28,7 +30,11 @@ object AppModule {
     @Provides
     @Singleton
     @Named("musicLocalDataSource")
-    fun provideMusicLocalDataSource(): MusicDataSource {
-        return DeviceStorageMusicDataSource()
+    fun provideMusicLocalDataSource(
+        @ApplicationContext context: Context
+    ): MusicDataSource {
+        return DeviceStorageMusicDataSource(
+            context = context
+        )
     }
 }

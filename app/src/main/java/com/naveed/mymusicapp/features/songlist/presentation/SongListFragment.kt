@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -15,6 +16,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.naveed.mymusicapp.databinding.FragmentSongListBinding
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -83,6 +86,7 @@ class SongListFragment : Fragment() {
         return binding.root
     }
 
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -93,6 +97,9 @@ class SongListFragment : Fragment() {
      */
     private fun updateUi(state: SongListUiState) {
         Timber.d("/// State is: $state")
+        val adapter = SongListAdapter(state.songs)
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        binding.recyclerView.adapter = adapter
     }
 
     /**

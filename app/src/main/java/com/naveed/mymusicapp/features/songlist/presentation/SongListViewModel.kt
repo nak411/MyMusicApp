@@ -21,6 +21,12 @@ class SongListViewModel @Inject constructor(
         Timber.d("/// Calling fetch songs")
         viewModelScope.launch(ioDispatcher) {
             musicRepository.getSongs()
+                .onSuccess { songs ->
+                    Timber.d("/// Songs: $songs")
+                }
+                .onFailure {
+                    Timber.e("Failed retrieve songs", it)
+                }
         }
     }
 }

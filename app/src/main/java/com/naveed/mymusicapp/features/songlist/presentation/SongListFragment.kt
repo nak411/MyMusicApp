@@ -32,7 +32,7 @@ class SongListFragment : Fragment() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
-            viewModel.fetchSongs()
+            sendEvent(SongListEvent.LoadSongs)
         } else {
             Toast.makeText(context, "Permission Denied", Toast.LENGTH_LONG).show()
         }
@@ -45,7 +45,7 @@ class SongListFragment : Fragment() {
             Manifest.permission.READ_EXTERNAL_STORAGE
         )
         if (permissionStatus == PackageManager.PERMISSION_GRANTED) {
-            viewModel.fetchSongs()
+            sendEvent(SongListEvent.LoadSongs)
         } else {
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
@@ -64,4 +64,13 @@ class SongListFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+
+    /**
+     * All events to the view model are sent through this function.  This is the
+     * exit point for this fragment
+     */
+    private fun sendEvent(event: SongListEvent) {
+        viewModel.onEvent(event)
+    }
+
 }

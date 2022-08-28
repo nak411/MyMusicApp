@@ -3,8 +3,7 @@ package com.naveed.mymusicapp.features.songlist.presentation
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naveed.mymusicapp.di.IoDispatcher
-import com.naveed.mymusicapp.features.songlist.SongListUiState
-import com.naveed.mymusicapp.features.songlist.data.api.MusicRepository
+import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 import com.naveed.mymusicapp.features.songlist.domain.SongListUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher

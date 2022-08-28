@@ -1,7 +1,7 @@
 package com.naveed.mymusicapp.features.songlist.domain
 
-import com.naveed.mymusicapp.features.songlist.SongListUiState
 import com.naveed.mymusicapp.features.songlist.data.api.MusicRepository
+import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 
 class LoadSongs(
     private val musicRepository: MusicRepository

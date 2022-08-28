@@ -1,4 +1,4 @@
-package com.naveed.mymusicapp.features.songlist
+package com.naveed.mymusicapp.features.songlist.domain.uimodel
 
 import com.naveed.mymusicapp.features.songlist.data.model.Song
 

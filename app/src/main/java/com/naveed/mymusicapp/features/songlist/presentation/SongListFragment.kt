@@ -12,8 +12,14 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.PackageManagerCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.naveed.mymusicapp.databinding.FragmentSongListBinding
+import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 /**
  * Contains the UI for displaying the list of songs
@@ -49,6 +55,23 @@ class SongListFragment : Fragment() {
         } else {
             requestPermissionLauncher.launch(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
+        observeState()
+    }
+
+    private fun observeState() {
+        // Start a coroutine in the lifecycle scope
+        lifecycleScope.launch {
+            // repeatOnLifecycle launches the block in a new coroutine every time the
+            // lifecycle is in the STARTED state (or above) and cancels it when it's STOPPED.
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                // Trigger the flow and start listening for values.
+                // Note that this happens when lifecycle is STARTED and stops
+                // collecting when the lifecycle is STOPPED
+                viewModel.uiState.collect { uiState ->
+                    updateUi(uiState)
+                }
+            }
+        }
     }
 
     override fun onCreateView(
@@ -66,6 +89,14 @@ class SongListFragment : Fragment() {
     }
 
     /**
+     * Entry point.  All state updates enter through this function
+     */
+    private fun updateUi(state: SongListUiState) {
+        Timber.d("/// State is: $state")
+    }
+
+    /**
+     * Exit Point
      * All events to the view model are sent through this function.  This is the
      * exit point for this fragment
      */

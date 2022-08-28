@@ -37,11 +37,10 @@ class SongListViewModel @Inject constructor(
     }
 
     private fun fetchSongs() {
-        Timber.d("/// Calling fetch songs")
         viewModelScope.launch(ioDispatcher) {
             songListUseCases.loadSongs()
                 .onSuccess { songs ->
-                    Timber.d("/// Songs: $songs")
+                    _uiState.value = songs
                 }
                 .onFailure {
                     Timber.e("Failed retrieve songs", it)

@@ -10,8 +10,9 @@
         android:id="@+id/iv_thumbnail"
         android:layout_width="@dimen/thumbnail_size"
         android:layout_height="@dimen/thumbnail_size"
+        android:padding="8dp"
         android:layout_gravity="center_vertical"
-        android:src="@color/purple_500" />
+        android:src="@drawable/ic_baseline_music_note_24" />
 
 
     <androidx.appcompat.widget.LinearLayoutCompat

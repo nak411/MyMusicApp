@@ -98,7 +98,6 @@ class SongListFragment : Fragment() {
     private fun updateUi(state: SongListUiState) {
         Timber.d("/// State is: $state")
         val adapter = SongListAdapter(state.songs)
-        binding.recyclerView.layoutManager = LinearLayoutManager(requireContext())
         binding.recyclerView.adapter = adapter
     }
 

@@ -2,6 +2,7 @@
 <androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="?attr/selectableItemBackground"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -21,7 +22,7 @@
         android:orientation="vertical"
         android:padding="@dimen/small"
         android:layout_gravity="center_vertical">
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -31,7 +32,7 @@
             app:layout_constraintStart_toEndOf="@id/iv_thumbnail"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Song name" />
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/tv_artist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

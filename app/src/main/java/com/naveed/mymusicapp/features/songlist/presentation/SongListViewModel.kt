@@ -25,10 +25,12 @@ class SongListViewModel @Inject constructor(
 ) : ViewModel() {
 
     // Backing property to avoid state updates from other classes
-    private val _uiState = MutableStateFlow(SongListUiState())
+    private val _uiState: MutableStateFlow<SongListUiState> = MutableStateFlow(SongListUiState())
 
     // The UI collects from this StateFlow to get its state updates
     val uiState: StateFlow<SongListUiState> = _uiState
+
+    private var prevSelectedIndex: Int = -1
 
     /**
      * This is the entry point into the view model and only public facing function
@@ -41,15 +43,24 @@ class SongListViewModel @Inject constructor(
     }
 
     private fun updateCurrent(index: Int) {
-        // Calling toMutable list here will create a new list on each call. Instead we use a backing
-        // mutable list to modify the same list
+        if (index == prevSelectedIndex) {
+            // User selected the same song that was previously selected
+            return
+        }
+
         _uiState.update { currentState ->
-            Timber.d("//// $currentState")
+            // Calling toMutable list here will create a new list on each call.
             val songs = currentState.songs.toMutableList()
+            // Set previously selected back to normal
+            if (prevSelectedIndex != -1) {
+                val prevSelectedSong = songs[prevSelectedIndex].copy(isSelected = false)
+                songs[prevSelectedIndex] = prevSelectedSong
+            }
+            // Select the new song
             val updatedSong = songs[index].copy(isSelected = true)
             songs[index] = updatedSong
+            prevSelectedIndex = index
             val newState = currentState.copy(songs = songs)
-            Timber.d("//// new state: $newState")
             newState
         }
     }

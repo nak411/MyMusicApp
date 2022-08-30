@@ -1,12 +1,18 @@
 package com.naveed.mymusicapp.features.songlist.presentation
 
+import android.content.res.ColorStateList
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.naveed.mymusicapp.R
 import com.naveed.mymusicapp.databinding.RowSongBinding
+import com.naveed.mymusicapp.ext.getPrimaryColor
+import com.naveed.mymusicapp.ext.getTextColor
 import com.naveed.mymusicapp.features.songlist.data.model.Song
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.UiSong
 
@@ -38,13 +44,24 @@ class SongListAdapter(
                 root.setOnClickListener {
                     onItemClicked(adapterPosition)
                 }
+                val selectedColor = root.context.getPrimaryColor()
+                val normalColor = root.context.getTextColor()
+
+                // Set color for selected view
                 if (song.isSelected) {
-                    tvTitle.setTextColor(Color.GREEN)
-                    ivThumbnail.setBackgroundColor(Color.GREEN)
+                    tvTitle.setTextColor(selectedColor)
+                    ImageViewCompat.setImageTintList(
+                        ivThumbnail,
+                        ColorStateList.valueOf(selectedColor)
+                    )
                 } else {
-                    tvTitle.setTextColor(Color.BLACK)
-                    ivThumbnail.setBackgroundColor(Color.TRANSPARENT)
+                    tvTitle.setTextColor(normalColor)
+                    ImageViewCompat.setImageTintList(
+                        ivThumbnail,
+                        ColorStateList.valueOf(normalColor)
+                    )
                 }
+
                 // TODO LOAD IMAGE WITH GLIDE
             }
         }

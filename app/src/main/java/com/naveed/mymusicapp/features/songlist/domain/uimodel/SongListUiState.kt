@@ -1,8 +1,15 @@
 package com.naveed.mymusicapp.features.songlist.domain.uimodel
 
-import com.naveed.mymusicapp.features.songlist.data.model.Song
-
 
 data class SongListUiState(
-    val songs: List<Song> = emptyList()
+    val songs: List<UiSong> = emptyList()
+)
+
+data class UiSong(
+    val id: String,
+    val title: String,
+    val artist: String,
+    val imagePath: String,
+    val path: String,
+    val isSelected: Boolean = false
 )

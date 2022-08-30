@@ -74,7 +74,10 @@ class SongListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerView.apply {
-            adapter = SongListAdapter()
+            adapter = SongListAdapter { index ->
+                Timber.d("/// Clicked item: $index")
+                sendEvent(SongListEvent.SelectedSong(index = index))
+            }
             addItemDecoration(DividerItemDecoration(requireContext(), LinearLayout.VERTICAL))
         }
     }

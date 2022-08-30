@@ -61,6 +61,26 @@ class SongListFragment : Fragment() {
         observeState()
     }
 
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentSongListBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.recyclerView.adapter = SongListAdapter()
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     private fun observeState() {
         // Start a coroutine in the lifecycle scope
         lifecycleScope.launch {
@@ -77,28 +97,13 @@ class SongListFragment : Fragment() {
         }
     }
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        _binding = FragmentSongListBinding.inflate(inflater, container, false)
-        return binding.root
-    }
-
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
-    }
-
     /**
      * Entry point.  All state updates enter through this function
      */
     private fun updateUi(state: SongListUiState) {
         Timber.d("/// State is: $state")
-        val adapter = SongListAdapter(state.songs)
-        binding.recyclerView.adapter = adapter
+        val adapter = binding.recyclerView.adapter as SongListAdapter
+        adapter.submitList(state.songs)
     }
 
     /**

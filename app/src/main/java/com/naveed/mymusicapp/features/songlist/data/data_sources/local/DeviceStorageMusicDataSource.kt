@@ -17,6 +17,7 @@ class DeviceStorageMusicDataSource(
     override suspend fun getSongs(): Result<List<Song>> {
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = arrayOf(
+            MediaStore.Audio.Media._ID,
             MediaStore.Audio.Media.TITLE,
             MediaStore.Audio.Media.ARTIST,
             MediaStore.Audio.Media.DATA,
@@ -40,11 +41,13 @@ class DeviceStorageMusicDataSource(
             null,
             null
         )?.use { cursor ->
+            val songIdColumn = cursor.getColumnIndex(MediaStore.Audio.Media._ID)
             val titleColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Media.TITLE)
             val artistColumnIndex = cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST)
             val dataColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Media.DATA)
             val albumColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ID)
             while (cursor.moveToNext()) {
+                val id = cursor.getString(songIdColumn)
                 val title = cursor.getString(titleColumnIndex)
                 val artistName = cursor.getString(artistColumnIndex)
                 val songPath = cursor.getString(dataColumnIndex)
@@ -54,6 +57,7 @@ class DeviceStorageMusicDataSource(
                     albumId
                 )
                 val song = Song(
+                    id = id,
                     title = title,
                     artist = artistName,
                     imagePath = albumArt.toString(),

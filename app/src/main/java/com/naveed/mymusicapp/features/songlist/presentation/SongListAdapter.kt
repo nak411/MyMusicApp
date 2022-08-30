@@ -2,13 +2,14 @@ package com.naveed.mymusicapp.features.songlist.presentation
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.naveed.mymusicapp.databinding.RowSongBinding
 import com.naveed.mymusicapp.features.songlist.data.model.Song
 
 class SongListAdapter(
-    private val data: List<Song>
-) : RecyclerView.Adapter<SongListAdapter.ViewHolder>() {
+) : ListAdapter<Song, SongListAdapter.ViewHolder>(SongDiffCallback()) {
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -17,11 +18,8 @@ class SongListAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.bind(data[position])
+        holder.bind(getItem(position))
     }
-
-    override fun getItemCount(): Int = data.size
-
 
     class ViewHolder(private val binding: RowSongBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -32,5 +30,17 @@ class SongListAdapter(
                 // TODO LOAD IMAGE WITH GLIDE
             }
         }
+    }
+
+    private class SongDiffCallback: DiffUtil.ItemCallback<Song>() {
+
+        override fun areItemsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Song, newItem: Song): Boolean {
+            return oldItem == newItem
+        }
+
     }
 }

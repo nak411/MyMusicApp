@@ -9,7 +9,6 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import com.naveed.mymusicapp.R
 import com.naveed.mymusicapp.databinding.FragmentPartialMusicPlayerBinding
 import com.naveed.mymusicapp.features.domain.uimodel.PartialMusicPlayerUiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -39,6 +38,13 @@ class PartialMusicPlayerFragment : Fragment() {
     ): View {
         _binding = FragmentPartialMusicPlayerBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        binding.btnPlayPause.setOnClickListener {
+            sendEvent(PartialMusicPlayerEvent.ClickedPausePlay)
+        }
     }
 
     override fun onDestroy() {
@@ -72,5 +78,14 @@ class PartialMusicPlayerFragment : Fragment() {
             tvArtist.text = state.artist
             btnPlayPause.setImageResource(state.playPauseIcon)
         }
+    }
+
+    /**
+     * Exit Point
+     * All events to the view model are sent through this function.  This is the
+     * exit point for this fragment
+     */
+    private fun sendEvent(event: PartialMusicPlayerEvent) {
+        viewModel.onEvent(event)
     }
 }

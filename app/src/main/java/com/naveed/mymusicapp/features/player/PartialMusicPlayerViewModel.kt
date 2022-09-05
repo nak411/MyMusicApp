@@ -3,7 +3,6 @@ package com.naveed.mymusicapp.features.player
 import androidx.lifecycle.ViewModel
 import com.naveed.mymusicapp.R
 import com.naveed.mymusicapp.features.domain.uimodel.PartialMusicPlayerUiState
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,9 +23,13 @@ class PartialMusicPlayerViewModel @Inject constructor() : ViewModel() {
     fun onEvent(event: PartialMusicPlayerEvent) {
         when (event) {
             is PartialMusicPlayerEvent.PlaySong -> playSong(event.songId)
-            PartialMusicPlayerEvent.PauseSong -> pauseSong()
+            PartialMusicPlayerEvent.ClickedPausePlay -> togglePlay()
             is PartialMusicPlayerEvent.ShowMusicPlayer -> showPlayer(event.show)
         }
+    }
+
+    private fun togglePlay() {
+        if (uiState.value.isPlaying) pauseSong() else playSong(uiState.value.songId)
     }
 
     private fun showPlayer(show: Boolean) {

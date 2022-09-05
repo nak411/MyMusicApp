@@ -8,6 +8,6 @@ data class PartialMusicPlayerUiState(
     val artist: String = "",
     val imagePath: String = "",
     val isPlaying: Boolean = false,
-    val playPauseIcon: Int = R.drawable.ic_baseline_play_arrow_24
+    val playPauseIcon: Int = R.drawable.ic_baseline_play_arrow_24,
     val showMusicPlayer: Boolean = false
 )

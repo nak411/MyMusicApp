@@ -16,6 +16,23 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintBottom_toTopOf="@+id/barrier_player"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_player"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="music_player"/>
+
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/music_player"
+        android:name="com.naveed.mymusicapp.features.player.PartialMusicPlayerFragment"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout="@layout/fragment_partial_music_player" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

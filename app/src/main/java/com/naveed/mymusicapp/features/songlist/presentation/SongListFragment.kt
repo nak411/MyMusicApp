@@ -19,6 +19,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.naveed.mymusicapp.core.presentation.delegates.StoragePermissionHandler
+import com.naveed.mymusicapp.core.presentation.delegates.StoragePermissionHandlerImpl
 import com.naveed.mymusicapp.databinding.FragmentSongListBinding
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 import dagger.hilt.android.AndroidEntryPoint
@@ -29,7 +31,7 @@ import timber.log.Timber
  * Contains the UI for displaying the list of songs
  */
 @AndroidEntryPoint
-class SongListFragment : Fragment() {
+class SongListFragment : Fragment(){
 
     private var _binding: FragmentSongListBinding? = null
 

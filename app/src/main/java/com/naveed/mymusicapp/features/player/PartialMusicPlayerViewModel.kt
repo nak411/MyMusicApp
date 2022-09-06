@@ -2,7 +2,7 @@ package com.naveed.mymusicapp.features.player
 
 import androidx.lifecycle.ViewModel
 import com.naveed.mymusicapp.R
-import com.naveed.mymusicapp.features.domain.uimodel.PartialMusicPlayerUiState
+import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

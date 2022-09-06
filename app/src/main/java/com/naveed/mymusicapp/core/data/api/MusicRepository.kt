@@ -1,6 +1,6 @@
-package com.naveed.mymusicapp.features.songlist.data.api
+package com.naveed.mymusicapp.core.data.api
 
-import com.naveed.mymusicapp.features.songlist.data.model.Song
+import com.naveed.mymusicapp.core.data.model.Song
 
 interface MusicRepository {
 

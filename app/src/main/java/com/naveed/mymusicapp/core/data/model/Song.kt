@@ -1,4 +1,4 @@
-package com.naveed.mymusicapp.features.songlist.data.model
+package com.naveed.mymusicapp.core.data.model
 
 data class Song(
     val id: String,

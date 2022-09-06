@@ -1,10 +1,10 @@
 package com.naveed.mymusicapp.di
 
 import android.content.Context
-import com.naveed.mymusicapp.features.songlist.data.api.MusicRepository
-import com.naveed.mymusicapp.features.songlist.data.api.MusicRepositoryImpl
-import com.naveed.mymusicapp.features.songlist.data.data_sources.MusicDataSource
-import com.naveed.mymusicapp.features.songlist.data.data_sources.local.DeviceStorageMusicDataSource
+import com.naveed.mymusicapp.core.data.api.MusicRepository
+import com.naveed.mymusicapp.core.data.api.MusicRepositoryImpl
+import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource
+import com.naveed.mymusicapp.core.data.data_sources.local.DeviceStorageMusicDataSource
 import com.naveed.mymusicapp.features.songlist.domain.LoadSongs
 import com.naveed.mymusicapp.features.songlist.domain.SongListUseCases
 import dagger.Module

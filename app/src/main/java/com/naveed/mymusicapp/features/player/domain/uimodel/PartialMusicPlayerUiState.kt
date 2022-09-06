@@ -1,4 +1,4 @@
-package com.naveed.mymusicapp.features.domain.uimodel
+package com.naveed.mymusicapp.features.player.domain.uimodel
 
 import com.naveed.mymusicapp.R
 

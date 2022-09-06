@@ -13,7 +13,7 @@ import com.naveed.mymusicapp.R
 import com.naveed.mymusicapp.databinding.RowSongBinding
 import com.naveed.mymusicapp.ext.getPrimaryColor
 import com.naveed.mymusicapp.ext.getTextColor
-import com.naveed.mymusicapp.features.songlist.data.model.Song
+import com.naveed.mymusicapp.core.data.model.Song
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.UiSong
 
 class SongListAdapter(

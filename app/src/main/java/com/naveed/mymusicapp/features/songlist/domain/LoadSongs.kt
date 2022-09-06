@@ -1,7 +1,7 @@
 package com.naveed.mymusicapp.features.songlist.domain
 
-import com.naveed.mymusicapp.features.songlist.data.api.MusicRepository
-import com.naveed.mymusicapp.features.songlist.data.model.Song
+import com.naveed.mymusicapp.core.data.api.MusicRepository
+import com.naveed.mymusicapp.core.data.model.Song
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.UiSong
 

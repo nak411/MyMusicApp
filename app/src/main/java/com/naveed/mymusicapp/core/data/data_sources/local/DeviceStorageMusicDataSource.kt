@@ -1,4 +1,4 @@
-package com.naveed.mymusicapp.features.songlist.data.data_sources.local
+package com.naveed.mymusicapp.core.data.data_sources.local
 
 import android.content.ContentUris
 import android.content.Context
@@ -6,8 +6,8 @@ import android.net.Uri
 import android.os.Environment.getExternalStorageDirectory
 import android.provider.MediaStore
 import androidx.core.os.EnvironmentCompat
-import com.naveed.mymusicapp.features.songlist.data.data_sources.MusicDataSource
-import com.naveed.mymusicapp.features.songlist.data.model.Song
+import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource
+import com.naveed.mymusicapp.core.data.model.Song
 import timber.log.Timber
 
 class DeviceStorageMusicDataSource(

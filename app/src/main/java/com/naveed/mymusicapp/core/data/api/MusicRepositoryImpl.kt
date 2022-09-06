@@ -1,7 +1,7 @@
-package com.naveed.mymusicapp.features.songlist.data.api
+package com.naveed.mymusicapp.core.data.api
 
-import com.naveed.mymusicapp.features.songlist.data.data_sources.MusicDataSource
-import com.naveed.mymusicapp.features.songlist.data.model.Song
+import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource
+import com.naveed.mymusicapp.core.data.model.Song
 
 class MusicRepositoryImpl(
     private val localDataSource: MusicDataSource

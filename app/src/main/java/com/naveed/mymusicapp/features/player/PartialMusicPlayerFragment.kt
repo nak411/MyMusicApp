@@ -10,7 +10,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.naveed.mymusicapp.databinding.FragmentPartialMusicPlayerBinding
-import com.naveed.mymusicapp.features.domain.uimodel.PartialMusicPlayerUiState
+import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 

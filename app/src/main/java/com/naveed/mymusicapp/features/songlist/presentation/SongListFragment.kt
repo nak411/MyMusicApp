@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -14,8 +15,11 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import com.naveed.mymusicapp.core.presentation.delegates.StoragePermissionHandler
 import com.naveed.mymusicapp.core.presentation.delegates.StoragePermissionHandlerImpl
 import com.naveed.mymusicapp.databinding.FragmentSongListBinding
+import com.naveed.mymusicapp.features.player.PartialMusicPlayerEvent
+import com.naveed.mymusicapp.features.player.PartialMusicPlayerViewModel
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import timber.log.Timber
 
@@ -32,13 +36,16 @@ class SongListFragment : Fragment(), StoragePermissionHandler by StoragePermissi
 
     private val viewModel: SongListViewModel by viewModels()
 
+    // Get player view model for controlling what is playing
+    private val playerViewModel: PartialMusicPlayerViewModel by activityViewModels()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         registerStoragePermissionLifecycleOwner(
             this,
             onGranted = { sendEvent(SongListEvent.LoadSongs) },
-            onDenied = { Timber.e("Failed to get permissions")}
+            onDenied = { Timber.e("Failed to get permissions") }
         )
         observeState()
     }
@@ -82,6 +89,27 @@ class SongListFragment : Fragment(), StoragePermissionHandler by StoragePermissi
                     updateUi(uiState)
                 }
             }
+        }
+        // Start a coroutine for collecting side effects
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sideEffect.collectLatest { sideEffect ->
+                    handleSideEffect(sideEffect)
+                }
+            }
+        }
+    }
+
+    /**
+     * Entry point for side effects.  All one time events are received here
+     */
+    private fun handleSideEffect(sideEffect: SongListSideEffect) {
+        when (sideEffect) {
+            is SongListSideEffect.PlaySong -> playerViewModel.onEvent(
+                PartialMusicPlayerEvent.PlaySong(
+                    sideEffect.songId
+                )
+            )
         }
     }
 

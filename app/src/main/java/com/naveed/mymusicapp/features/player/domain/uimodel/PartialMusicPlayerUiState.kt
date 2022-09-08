@@ -7,6 +7,7 @@ data class PartialMusicPlayerUiState(
     val title: String = "",
     val artist: String = "",
     val imagePath: String = "",
+    val data: String = "",
     val isPlaying: Boolean = false,
     val playPauseIcon: Int = R.drawable.ic_baseline_play_arrow_24,
     val showMusicPlayer: Boolean = false

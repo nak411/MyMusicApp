@@ -5,6 +5,8 @@ import com.naveed.mymusicapp.core.data.api.MusicRepository
 import com.naveed.mymusicapp.core.data.api.MusicRepositoryImpl
 import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource
 import com.naveed.mymusicapp.core.data.data_sources.local.DeviceStorageMusicDataSource
+import com.naveed.mymusicapp.features.player.domain.GetSongForId
+import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.songlist.domain.LoadSongs
 import com.naveed.mymusicapp.features.songlist.domain.SongListUseCases
 import dagger.Module
@@ -46,6 +48,15 @@ object AppModule {
     ): SongListUseCases {
         return SongListUseCases(
             loadSongs = LoadSongs(musicRepository = musicRepository)
+        )
+    }
+
+    @Provides
+    fun provideMusicPlayerUseCases(
+        musicRepository: MusicRepository
+    ): MusicPlayerUseCases {
+        return MusicPlayerUseCases(
+            getSongForId = GetSongForId(musicRepository = musicRepository)
         )
     }
 }

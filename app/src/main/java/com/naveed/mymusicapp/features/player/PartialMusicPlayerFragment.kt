@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
@@ -77,6 +78,7 @@ class PartialMusicPlayerFragment : Fragment() {
             tvTitle.text = state.title
             tvArtist.text = state.artist
             btnPlayPause.setImageResource(state.playPauseIcon)
+            binding.root.isVisible = state.showMusicPlayer
         }
     }
 

@@ -9,22 +9,7 @@ class GetSongForId(
     private val musicRepository: MusicRepository
 ) {
 
-    suspend operator fun invoke(songId: Int): Result<PartialMusicPlayerUiState> {
-        val song = musicRepository.getSongById(id = songId).getOrNull()
-        return if (song != null) {
-            val state = song.toPartialMusicPLayerUiState()
-            Result.success(state)
-        } else {
-            Result.failure("Unable to retreive song".toException())
-        }
+    suspend operator fun invoke(songId: Int): Result<Song> {
+        return musicRepository.getSongById(id = songId)
     }
-
-    private fun Song.toPartialMusicPLayerUiState(): PartialMusicPlayerUiState =
-        PartialMusicPlayerUiState(
-            songId = id,
-            title = title,
-            artist = artist,
-            imagePath = imagePath,
-            data = path
-        )
 }

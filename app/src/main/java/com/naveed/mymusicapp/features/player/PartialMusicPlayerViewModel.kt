@@ -1,16 +1,21 @@
 package com.naveed.mymusicapp.features.player
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.naveed.mymusicapp.R
+import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class PartialMusicPlayerViewModel @Inject constructor() : ViewModel() {
+class PartialMusicPlayerViewModel @Inject constructor(
+    private val musicPlayerUseCases: MusicPlayerUseCases
+) : ViewModel() {
 
     private val _uiState: MutableStateFlow<PartialMusicPlayerUiState> =
         MutableStateFlow(PartialMusicPlayerUiState())
@@ -48,12 +53,23 @@ class PartialMusicPlayerViewModel @Inject constructor() : ViewModel() {
     }
 
     private fun playSong(songId: String) {
-        // TODO fetch song for playing
-        _uiState.update { currentState ->
-            currentState.copy(
-                isPlaying = true,
-                playPauseIcon = R.drawable.ic_baseline_pause_24
-            )
+        viewModelScope.launch {
+            musicPlayerUseCases.getSongById(songId = songId.toInt())
+                .onSuccess { song ->
+                    _uiState.update { currentState ->
+                        currentState.copy(
+                            songId = song.id,
+                            title = song.title,
+                            artist = song.artist,
+                            data = song.path,
+                            imagePath = song.imagePath,
+                            isPlaying = true,
+                            playPauseIcon = R.drawable.ic_baseline_pause_24,
+                            showMusicPlayer = true
+                        )
+                    }
+                }
         }
+
     }
 }

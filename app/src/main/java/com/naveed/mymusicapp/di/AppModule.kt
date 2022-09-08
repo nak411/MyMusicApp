@@ -56,7 +56,7 @@ object AppModule {
         musicRepository: MusicRepository
     ): MusicPlayerUseCases {
         return MusicPlayerUseCases(
-            getSongForId = GetSongForId(musicRepository = musicRepository)
+            getSongById = GetSongForId(musicRepository = musicRepository)
         )
     }
 }

@@ -6,6 +6,4 @@ sealed interface PartialMusicPlayerEvent {
 
     object ClickedPausePlay: PartialMusicPlayerEvent
 
-    data class ShowMusicPlayer(val show: Boolean) : PartialMusicPlayerEvent
-
 }

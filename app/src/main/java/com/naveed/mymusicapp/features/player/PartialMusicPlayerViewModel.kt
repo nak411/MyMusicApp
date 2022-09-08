@@ -29,20 +29,13 @@ class PartialMusicPlayerViewModel @Inject constructor(
         when (event) {
             is PartialMusicPlayerEvent.PlaySong -> playSong(event.songId)
             PartialMusicPlayerEvent.ClickedPausePlay -> togglePlay()
-            is PartialMusicPlayerEvent.ShowMusicPlayer -> showPlayer(event.show)
         }
     }
 
     private fun togglePlay() {
         if (uiState.value.isPlaying) pauseSong() else playSong(uiState.value.songId)
     }
-
-    private fun showPlayer(show: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(showMusicPlayer = show)
-        }
-    }
-
+    
     private fun pauseSong() {
         _uiState.update { currentState ->
             currentState.copy(

@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MyMusicApp</string>
     <string name="no_songs_found">No songs found!</string>
+    <string name="pause">Pause</string>
 </resources>

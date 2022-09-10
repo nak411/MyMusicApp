@@ -4,12 +4,15 @@ import android.media.browse.MediaBrowser
 import android.media.session.MediaSession
 import android.media.session.PlaybackState
 import android.os.Bundle
-import android.service.media.MediaBrowserService
+import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
+import androidx.media.MediaBrowserServiceCompat
 
-class MediaPlaybackService : MediaBrowserService() {
+class MusicPlaybackService : MediaBrowserServiceCompat() {
 
-    private var mediaSession: MediaSession? = null
-    private lateinit var stateBuilder: PlaybackState.Builder
+    private var mediaSession: MediaSessionCompat? = null
+    private lateinit var stateBuilder: PlaybackStateCompat.Builder
 
     companion object {
         private const val TAG = "MusicService"
@@ -19,17 +22,17 @@ class MediaPlaybackService : MediaBrowserService() {
 
     override fun onCreate() {
         super.onCreate()
-        
+
 
         // Create a media session
-        mediaSession = MediaSession(baseContext, TAG).apply {
+        mediaSession = MediaSessionCompat(baseContext, TAG).apply {
             // Set an initial PlaybackState with ACTION_PLAY, so media buttons can start the player
-            stateBuilder = PlaybackState.Builder()
-                .setActions(PlaybackState.ACTION_PLAY or PlaybackState.ACTION_PAUSE)
+            stateBuilder = PlaybackStateCompat.Builder()
+                .setActions(PlaybackStateCompat.ACTION_PLAY or PlaybackStateCompat.ACTION_PAUSE)
             setPlaybackState(stateBuilder.build())
 
             // MySessionCallback() has methods that handle callbacks from a media controller
-            setCallback(MediaSessionCallback())
+            setCallback(MediaSessionCallback(context = baseContext, mediaSession = this))
 
             // Set the session's token so that client activities can communicate with it.
             setSessionToken(sessionToken)
@@ -47,18 +50,18 @@ class MediaPlaybackService : MediaBrowserService() {
     }
 
     override fun onLoadChildren(
-        parentMediaId: String,
-        result: Result<MutableList<MediaBrowser.MediaItem>>
+        parentId: String,
+        result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         // Browsing not allowed
-        if (EMPTY_MEDIA_ROOT_ID == parentMediaId) {
+        if (EMPTY_MEDIA_ROOT_ID == parentId) {
             result.sendResult(null)
             return
         }
 
-        val mediaItems = mutableListOf<MediaBrowser.MediaItem>()
+        val mediaItems = mutableListOf<MediaBrowserCompat.MediaItem>()
         // Check if this is the root menu:
-        if (MEDIA_ROOT_ID == parentMediaId) {
+        if (MEDIA_ROOT_ID == parentId) {
             // Build the MediaItem objects for the top level,
             // and put them in the mediaItems list...
         } else {

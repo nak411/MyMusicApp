@@ -33,6 +33,19 @@ class PartialMusicPlayerViewModel @Inject constructor(
         when (event) {
             is PartialMusicPlayerEvent.PlaySong -> playSong(event.songId)
             PartialMusicPlayerEvent.ClickedPausePlay -> togglePlay()
+            is PartialMusicPlayerEvent.LoadState -> loadState(event)
+        }
+    }
+
+    private fun loadState(event: PartialMusicPlayerEvent.LoadState) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                title = event.title,
+                artist = event.artist,
+                imagePath = event.thumbnail,
+                isPlaying = event.isPlaying,
+                playPauseIcon = event.playPauseIcon
+            )
         }
     }
 

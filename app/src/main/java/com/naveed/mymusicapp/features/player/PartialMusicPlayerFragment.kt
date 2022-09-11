@@ -13,6 +13,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.naveed.mymusicapp.databinding.FragmentPartialMusicPlayerBinding
 import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -30,6 +31,7 @@ class PartialMusicPlayerFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         observeState()
+        observeSideEffect()
     }
 
     override fun onCreateView(
@@ -65,8 +67,27 @@ class PartialMusicPlayerFragment : Fragment() {
                 viewModel.uiState.collect { uiState ->
                     updateUi(uiState)
                 }
-
             }
+        }
+    }
+
+    private fun observeSideEffect() {
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.sideEffect.collectLatest { sideEffect ->
+                    handleSideEffect(sideEffect)
+                }
+            }
+        }
+    }
+
+    /**
+     * Entry point for side effects.  All one time events are received here
+     */
+    private fun handleSideEffect(sideEffect: PartialMusicPlayerSideEffect) {
+        when(sideEffect) {
+            PartialMusicPlayerSideEffect.PauseSong -> TODO()
+            PartialMusicPlayerSideEffect.PlaySong -> TODO()
         }
     }
 

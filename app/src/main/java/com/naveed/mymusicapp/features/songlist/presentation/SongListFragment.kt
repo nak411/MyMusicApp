@@ -48,6 +48,7 @@ class SongListFragment : Fragment(), StoragePermissionHandler by StoragePermissi
             onDenied = { Timber.e("Failed to get permissions") }
         )
         observeState()
+        observeSideEffects()
     }
 
     override fun onCreateView(
@@ -90,6 +91,9 @@ class SongListFragment : Fragment(), StoragePermissionHandler by StoragePermissi
                 }
             }
         }
+    }
+
+    private fun observeSideEffects() {
         // Start a coroutine for collecting side effects
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {

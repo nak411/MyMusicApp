@@ -6,7 +6,9 @@ import com.naveed.mymusicapp.R
 import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -17,9 +19,11 @@ class PartialMusicPlayerViewModel @Inject constructor(
     private val musicPlayerUseCases: MusicPlayerUseCases
 ) : ViewModel() {
 
+    private val _sideEffect: MutableSharedFlow<PartialMusicPlayerSideEffect> = MutableSharedFlow()
+    val sideEffect: SharedFlow<PartialMusicPlayerSideEffect> = _sideEffect
+
     private val _uiState: MutableStateFlow<PartialMusicPlayerUiState> =
         MutableStateFlow(PartialMusicPlayerUiState())
-
     val uiState: StateFlow<PartialMusicPlayerUiState> = _uiState
 
     /**
@@ -43,6 +47,7 @@ class PartialMusicPlayerViewModel @Inject constructor(
                 playPauseIcon = R.drawable.ic_baseline_play_arrow_24
             )
         }
+        emitEffect(PartialMusicPlayerSideEffect.PauseSong)
     }
 
     private fun playSong(songId: String) {
@@ -61,8 +66,14 @@ class PartialMusicPlayerViewModel @Inject constructor(
                             showMusicPlayer = true
                         )
                     }
+                    emitEffect(PartialMusicPlayerSideEffect.PlaySong)
                 }
         }
+    }
 
+    private fun emitEffect(effect: PartialMusicPlayerSideEffect) {
+        viewModelScope.launch {
+            _sideEffect.emit(effect)
+        }
     }
 }

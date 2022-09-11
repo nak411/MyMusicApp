@@ -8,15 +8,18 @@ import androidx.media.MediaBrowserServiceCompat
 
 class MusicPlaybackService : MediaBrowserServiceCompat() {
 
-    companion object {
-        private const val TAG = "MusicService"
-        private const val MEDIA_ROOT_ID = "media_root_id"
-        private const val EMPTY_MEDIA_ROOT_ID = "empty_root_id"
-    }
+    private var mediaSession: MediaSessionCompat? = null
 
     override fun onCreate() {
         super.onCreate()
+        setupSession()
+    }
 
+    private fun setupSession() {
+        // Create a session and set the token
+        val session  = MediaSessionCompat(this, TAG)
+        sessionToken = session.sessionToken
+        mediaSession = session
     }
 
     override fun onGetRoot(
@@ -24,7 +27,7 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         clientUid: Int,
         rootHints: Bundle?
     ): BrowserRoot {
-        // Clients can connect, but this BrowserRoot is an empty hierachy
+        // Clients can connect, but this BrowserRoot is an empty hierarchy
         // so onLoadChildren returns nothing. This disables the ability to browse for content.
         return BrowserRoot(EMPTY_MEDIA_ROOT_ID, null)
     }
@@ -33,6 +36,12 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
+        result.sendResult(null)
+    }
 
+    companion object {
+        private const val TAG = "MusicService"
+        private const val MEDIA_ROOT_ID = "media_root_id"
+        private const val EMPTY_MEDIA_ROOT_ID = "empty_root_id"
     }
 }

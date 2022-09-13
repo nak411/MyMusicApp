@@ -102,4 +102,9 @@ class PartialMusicPlayerViewModel @Inject constructor(
             _sideEffect.emit(effect)
         }
     }
+
+    override fun onCleared() {
+        super.onCleared()
+        musicServiceUseCases.unsubscribeMediaBrowser()
+    }
 }

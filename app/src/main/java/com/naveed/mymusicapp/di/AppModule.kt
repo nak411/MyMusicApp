@@ -15,6 +15,7 @@ import com.naveed.mymusicapp.server.MusicServiceConnection
 import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import com.naveed.mymusicapp.server.domain.usecases.GetMediaItems
 import com.naveed.mymusicapp.server.domain.usecases.PlayPauseSong
+import com.naveed.mymusicapp.server.domain.usecases.UnsubscribeMediaBrowser
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -89,7 +90,8 @@ object AppModule {
     ): MusicServiceUseCases {
         return MusicServiceUseCases(
             getMediaItems = GetMediaItems(musicRepository = musicRepository),
-            playPauseSong = PlayPauseSong(musicServiceConnection = musicServiceConnection)
+            playPauseSong = PlayPauseSong(musicServiceConnection = musicServiceConnection),
+            unsubscribeMediaBrowser = UnsubscribeMediaBrowser(musicServiceConnection = musicServiceConnection)
         )
     }
 }

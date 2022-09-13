@@ -4,6 +4,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.naveed.mymusicapp.di.IoDispatcher
@@ -12,7 +13,6 @@ import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -52,7 +52,7 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
 
     /**
      * Returns the "root" media ID that the client should request to get the list of
-     * [MediaItems] to browse
+     * [MediaBrowserCompat.MediaItem]s to browse
      */
     override fun onGetRoot(
         clientPackageName: String,
@@ -65,7 +65,7 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
     }
 
     /**
-     * Returns (via the [result] parameter) a list of [MediaItem]s that are child
+     * Returns (via the [result] parameter) a list of [MediaBrowserCompat.MediaItem]s that are child
      * items of the provided [parentId]
      */
     override fun onLoadChildren(

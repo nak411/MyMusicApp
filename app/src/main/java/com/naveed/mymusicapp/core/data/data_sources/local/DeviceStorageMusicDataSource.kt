@@ -2,17 +2,23 @@ package com.naveed.mymusicapp.core.data.data_sources.local
 
 import android.content.ContentUris
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Environment.getExternalStorageDirectory
 import android.provider.MediaStore
+import androidx.core.content.edit
 import androidx.core.os.EnvironmentCompat
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource
 import com.naveed.mymusicapp.core.data.model.Song
 import com.naveed.mymusicapp.ext.toException
 import timber.log.Timber
 
 class DeviceStorageMusicDataSource(
-    private val context: Context
+    private val context: Context,
+    private val preferences: SharedPreferences
 ) : MusicDataSource {
 
     override suspend fun getSongs(): Result<List<Song>> {
@@ -38,6 +44,39 @@ class DeviceStorageMusicDataSource(
             Result.success(songs.first())
         } else {
             Result.failure("Failed retrieve songs".toException())
+        }
+    }
+
+    override suspend fun saveCurrentlyPlaying(song: Song): Result<Boolean> {
+        preferences.edit {
+            putString(SONG_ID, song.id)
+            putString(TITLE, song.title)
+            putString(ARTIST, song.artist)
+            putString(IMAGE_PATH, song.imagePath)
+            putString(PATH, song.path)
+            commit()
+        }
+        // This result doesn't tell us much since it always succeeds
+        return Result.success(true)
+    }
+
+    override fun getCurrentlyPLaying(): Result<Song> {
+        val id = preferences.getString(SONG_ID, null)
+        val title = preferences.getString(TITLE, null)
+        val artist = preferences.getString(ARTIST, null)
+        val imagePath = preferences.getString(IMAGE_PATH, null)
+        val path = preferences.getString(PATH, null)
+        return if (id != null && title != null && artist != null && imagePath != null && path != null) {
+            val song = Song(
+                id = id,
+                title = title,
+                artist = artist,
+                imagePath = imagePath,
+                path = path
+            )
+            Result.success(song)
+        } else {
+            Result.failure("No song saved in currently playing".toException())
         }
     }
 
@@ -89,5 +128,13 @@ class DeviceStorageMusicDataSource(
             }
         }
         return songs
+    }
+
+    companion object {
+        private const val SONG_ID = "id"
+        private const val TITLE = "title"
+        private const val ARTIST = "artist"
+        private const val IMAGE_PATH = "imagePath"
+        private const val PATH = "path"
     }
 }

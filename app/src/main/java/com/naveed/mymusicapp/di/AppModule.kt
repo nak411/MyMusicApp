@@ -66,10 +66,10 @@ object AppModule {
 
     @Provides
     fun provideSongListUseCases(
-        musicRepository: MusicRepository
+        musicServiceConnection: MusicServiceConnection
     ): SongListUseCases {
         return SongListUseCases(
-            loadSongs = LoadSongs(musicRepository = musicRepository)
+            loadSongs = LoadSongs(musicServiceConnection = musicServiceConnection)
         )
     }
 

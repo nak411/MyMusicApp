@@ -64,7 +64,6 @@ class SongListFragment : Fragment(), StoragePermissionHandler by StoragePermissi
         super.onViewCreated(view, savedInstanceState)
         binding.recyclerView.apply {
             adapter = SongListAdapter { index ->
-                Timber.d("/// Clicked item: $index")
                 sendEvent(SongListEvent.SelectedSong(index = index))
             }
             addItemDecoration(DividerItemDecoration(requireContext(), LinearLayout.VERTICAL))
@@ -121,7 +120,6 @@ class SongListFragment : Fragment(), StoragePermissionHandler by StoragePermissi
      * Entry point.  All state updates enter through this function
      */
     private fun updateUi(state: SongListUiState) {
-        Timber.d("/// State is: $state")
         val adapter = binding.recyclerView.adapter as SongListAdapter
         adapter.submitList(state.songs)
     }

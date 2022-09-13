@@ -1,24 +1,22 @@
 package com.naveed.mymusicapp.server
 
+import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
-import com.naveed.mymusicapp.di.MainDispatcher
 import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MusicPlaybackService : MediaBrowserServiceCompat() {
-
-    @Inject
-    @MainDispatcher
-    internal lateinit var mainDispatcher: CoroutineDispatcher
 
     @Inject
     internal lateinit var musicServiceUseCases: MusicServiceUseCases
@@ -27,7 +25,14 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
 
 
     private val serviceJob = SupervisorJob()
-    private val serviceScope = CoroutineScope(mainDispatcher + serviceJob)
+    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+
+    /**
+     * Media player instance for playing the actual song
+     */
+    private val mediaPlayer: MediaPlayer by lazy {
+        MediaPlayer()
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -56,7 +61,7 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        serviceScope.launch {
+        val job = serviceScope.launch(Dispatchers.IO) {
             musicServiceUseCases.getMediaItems()
                 .onSuccess { children ->
                     result.sendResult(children.toMutableList())
@@ -64,6 +69,12 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
                 .onFailure {
                     result.sendResult(null)
                 }
+        }
+        // If the results are not ready, the service must "detach" the results before
+        // the method returns. After the source is ready, the lambda above will run,
+        // and the caller will be notified that the results are ready.
+        if (job.isActive) {
+            result.detach()
         }
     }
 
@@ -80,9 +91,33 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
 
     private fun setupSession() {
         // Create a session and set the token
-        val session = MediaSessionCompat(this, TAG)
-        sessionToken = session.sessionToken
-        mediaSession = session
+        mediaSession = MediaSessionCompat(this, TAG).apply {
+            setCallback(MyMediaSessionCallback())
+        }
+        // Set the session's token so that client activities can communicate with it.
+        sessionToken = mediaSession.sessionToken
+    }
+
+    private inner class MyMediaSessionCallback : MediaSessionCompat.Callback() {
+
+        override fun onPlayFromUri(uri: Uri, extras: Bundle?) {
+            Timber.i("///", "Called play from uri: $uri")
+            mediaPlayer.setDataSource(uri.toString())
+            onPrepare()
+            onPlay()
+        }
+
+        override fun onPause() {
+            mediaPlayer.pause()
+        }
+
+        override fun onPrepare() {
+            mediaPlayer.prepare()
+        }
+
+        override fun onPlay() {
+            mediaPlayer.start()
+        }
     }
 
     companion object {

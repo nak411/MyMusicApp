@@ -7,6 +7,7 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.naveed.mymusicapp.ext.subscribe
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
@@ -48,6 +49,20 @@ class MusicServiceConnection(
      * a successful connection is established in [MediaBrowserConnectionCallback#onConnected]
      */
     private lateinit var mediaController: MediaControllerCompat
+
+    /**
+     * Subscribe to receive the list of media items that the service is managing
+     */
+    suspend fun subscribe(parentId: String = "/") : List<MediaBrowserCompat.MediaItem> {
+        return mediaBrowser.subscribe(parentId)
+    }
+
+    /**
+     * Call this method once the client is done using this data
+     */
+    fun unsubscribe(parentId: String = "/") {
+        mediaBrowser.unsubscribe(parentId)
+    }
 
     /**
      * Callbacks used for performing the handshake with the music service and receiving

@@ -1,16 +1,17 @@
 package com.naveed.mymusicapp.features.songlist.domain
 
-import com.naveed.mymusicapp.core.data.api.MusicRepository
-import com.naveed.mymusicapp.core.data.model.Song
+import android.support.v4.media.MediaBrowserCompat
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.SongListUiState
 import com.naveed.mymusicapp.features.songlist.domain.uimodel.UiSong
+import com.naveed.mymusicapp.server.MusicServiceConnection
+
 
 class LoadSongs(
-    private val musicRepository: MusicRepository
+    private val musicServiceConnection: MusicServiceConnection
 ) {
     suspend operator fun invoke(): Result<SongListUiState> {
-        val songList = musicRepository.getSongs().getOrNull()
-        return if (songList != null) {
+        val songList = musicServiceConnection.subscribe()
+        return if (songList.isNotEmpty()) {
             val uiSongList = songList.map { it.toUiSong() }
             val songs = SongListUiState(songs = uiSongList)
             Result.success(songs)
@@ -19,13 +20,13 @@ class LoadSongs(
         }
     }
 
-    private fun Song.toUiSong() : UiSong =
+    private fun MediaBrowserCompat.MediaItem.toUiSong() : UiSong =
         UiSong(
-            id = id,
-            title = title,
-            artist = artist,
-            imagePath = imagePath,
-            path = path,
+            id = description.mediaId!!,
+            title = description.title.toString(),
+            artist = description.subtitle.toString(),
+            imagePath = description.iconUri.toString(),
+            path = description.mediaUri.toString(),
             isSelected = false
         )
 

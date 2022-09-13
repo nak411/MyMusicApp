@@ -3,7 +3,6 @@ package com.naveed.mymusicapp.server.domain.usecases
 import android.net.Uri
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
-import android.support.v4.media.MediaMetadataCompat
 import com.naveed.mymusicapp.core.data.api.MusicRepository
 import com.naveed.mymusicapp.core.data.model.Song
 import com.naveed.mymusicapp.ext.toException

@@ -1,24 +1,32 @@
 package com.naveed.mymusicapp.features.player
 
+import android.net.Uri
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.naveed.mymusicapp.R
+import com.naveed.mymusicapp.di.IoDispatcher
+import com.naveed.mymusicapp.di.MainDispatcher
 import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
 import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
 class PartialMusicPlayerViewModel @Inject constructor(
     private val musicPlayerUseCases: MusicPlayerUseCases,
-    private val musicServiceUseCases: MusicServiceUseCases
+    private val musicServiceUseCases: MusicServiceUseCases,
+    @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
+    @MainDispatcher private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
 
     private val _sideEffect: MutableSharedFlow<PartialMusicPlayerSideEffect> = MutableSharedFlow()
@@ -52,7 +60,7 @@ class PartialMusicPlayerViewModel @Inject constructor(
     }
 
     private fun togglePlay() {
-        musicServiceUseCases.playPauseSong()
+        musicServiceUseCases.playPauseSong(Uri.parse(uiState.value.data))
         if (uiState.value.isPlaying) pauseSong() else playSong(uiState.value.songId)
     }
 
@@ -67,22 +75,24 @@ class PartialMusicPlayerViewModel @Inject constructor(
     }
 
     private fun playSong(songId: String) {
-        viewModelScope.launch {
+        viewModelScope.launch(ioDispatcher) {
             musicPlayerUseCases.getSongById(songId = songId.toInt())
                 .onSuccess { song ->
-                    _uiState.update { currentState ->
-                        currentState.copy(
-                            songId = song.id,
-                            title = song.title,
-                            artist = song.artist,
-                            data = song.path,
-                            imagePath = song.imagePath,
-                            isPlaying = true,
-                            playPauseIcon = R.drawable.ic_baseline_pause_24,
-                            showMusicPlayer = true
-                        )
+                    withContext(mainDispatcher) {
+                        _uiState.update { currentState ->
+                            currentState.copy(
+                                songId = song.id,
+                                title = song.title,
+                                artist = song.artist,
+                                data = song.path,
+                                imagePath = song.imagePath,
+                                isPlaying = true,
+                                playPauseIcon = R.drawable.ic_baseline_pause_24,
+                                showMusicPlayer = true
+                            )
+                        }
+                        emitEffect(PartialMusicPlayerSideEffect.PlaySong)
                     }
-                    emitEffect(PartialMusicPlayerSideEffect.PlaySong)
                 }
         }
     }

@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.naveed.mymusicapp.R
 import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
+import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PartialMusicPlayerViewModel @Inject constructor(
-    private val musicPlayerUseCases: MusicPlayerUseCases
+    private val musicPlayerUseCases: MusicPlayerUseCases,
+    private val musicServiceUseCases: MusicServiceUseCases
 ) : ViewModel() {
 
     private val _sideEffect: MutableSharedFlow<PartialMusicPlayerSideEffect> = MutableSharedFlow()
@@ -50,6 +52,7 @@ class PartialMusicPlayerViewModel @Inject constructor(
     }
 
     private fun togglePlay() {
+        musicServiceUseCases.playPauseSong()
         if (uiState.value.isPlaying) pauseSong() else playSong(uiState.value.songId)
     }
 

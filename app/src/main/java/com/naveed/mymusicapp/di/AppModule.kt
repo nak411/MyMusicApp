@@ -1,5 +1,6 @@
 package com.naveed.mymusicapp.di
 
+import android.content.ComponentName
 import android.content.Context
 import com.naveed.mymusicapp.core.data.api.MusicRepository
 import com.naveed.mymusicapp.core.data.api.MusicRepositoryImpl
@@ -9,8 +10,11 @@ import com.naveed.mymusicapp.features.player.domain.GetSongForId
 import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.songlist.domain.LoadSongs
 import com.naveed.mymusicapp.features.songlist.domain.SongListUseCases
+import com.naveed.mymusicapp.server.MusicPlaybackService
+import com.naveed.mymusicapp.server.MusicServiceConnection
 import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import com.naveed.mymusicapp.server.domain.usecases.GetMediaItems
+import com.naveed.mymusicapp.server.domain.usecases.PlayPauseSong
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,6 +49,22 @@ object AppModule {
     }
 
     @Provides
+    @Singleton
+    fun provideMusicServiceConnection(
+        @ApplicationContext context: Context,
+        componentName: ComponentName
+    ): MusicServiceConnection {
+        return MusicServiceConnection(context = context, componentName = componentName)
+    }
+
+    @Provides
+    fun provideComponentName(
+       @ApplicationContext context: Context
+    ): ComponentName {
+        return ComponentName(context, MusicPlaybackService::class.java)
+    }
+
+    @Provides
     fun provideSongListUseCases(
         musicRepository: MusicRepository
     ): SongListUseCases {
@@ -64,10 +84,12 @@ object AppModule {
 
     @Provides
     fun provideMusicServiceUseCases(
-        musicRepository: MusicRepository
+        musicRepository: MusicRepository,
+        musicServiceConnection: MusicServiceConnection
     ): MusicServiceUseCases {
         return MusicServiceUseCases(
-            getMediaItems = GetMediaItems(musicRepository = musicRepository)
+            getMediaItems = GetMediaItems(musicRepository = musicRepository),
+            playPauseSong = PlayPauseSong(musicServiceConnection = musicServiceConnection)
         )
     }
 }

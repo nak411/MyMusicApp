@@ -6,8 +6,11 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaSessionCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.naveed.mymusicapp.di.IoDispatcher
+import com.naveed.mymusicapp.di.MainDispatcher
 import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -21,11 +24,19 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
     @Inject
     internal lateinit var musicServiceUseCases: MusicServiceUseCases
 
+    @Inject
+    @MainDispatcher
+    internal lateinit var mainDispatcher: CoroutineDispatcher
+
+    @Inject
+    @IoDispatcher
+    internal lateinit var ioDispatcher: CoroutineDispatcher
+
     private lateinit var mediaSession: MediaSessionCompat
 
 
     private val serviceJob = SupervisorJob()
-    private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
+    private val serviceScope by lazy { CoroutineScope(mainDispatcher + serviceJob) }
 
     /**
      * Media player instance for playing the actual song
@@ -61,7 +72,7 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        val job = serviceScope.launch(Dispatchers.IO) {
+        val job = serviceScope.launch(ioDispatcher) {
             musicServiceUseCases.getMediaItems()
                 .onSuccess { children ->
                     result.sendResult(children.toMutableList())

@@ -2,7 +2,6 @@ package com.naveed.mymusicapp.di
 
 import android.content.ComponentName
 import android.content.Context
-import android.preference.PreferenceManager
 import com.naveed.mymusicapp.core.data.api.MusicRepository
 import com.naveed.mymusicapp.core.data.api.MusicRepositoryImpl
 import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource

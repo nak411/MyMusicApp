@@ -9,7 +9,7 @@ class GetSongForId(
     private val musicRepository: MusicRepository
 ) {
 
-    suspend operator fun invoke(songId: Int): Result<Song> {
+    suspend operator fun invoke(songId: String): Result<Song> {
         return musicRepository.getSongById(id = songId)
     }
 }

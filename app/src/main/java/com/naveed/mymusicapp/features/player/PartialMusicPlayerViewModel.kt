@@ -6,8 +6,10 @@ import androidx.lifecycle.viewModelScope
 import com.naveed.mymusicapp.R
 import com.naveed.mymusicapp.di.IoDispatcher
 import com.naveed.mymusicapp.di.MainDispatcher
+import com.naveed.mymusicapp.features.common.domain.MusicServiceClientUseCases
 import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.player.domain.uimodel.PartialMusicPlayerUiState
+import com.naveed.mymusicapp.server.MusicServiceConnection
 import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,18 +21,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 import javax.inject.Inject
 
 @HiltViewModel
 class PartialMusicPlayerViewModel @Inject constructor(
     private val musicPlayerUseCases: MusicPlayerUseCases,
-    private val musicServiceUseCases: MusicServiceUseCases,
+    private val musicServiceClientUseCases: MusicServiceClientUseCases,
     @IoDispatcher private val ioDispatcher: CoroutineDispatcher = Dispatchers.IO,
     @MainDispatcher private val mainDispatcher: CoroutineDispatcher = Dispatchers.Main
 ) : ViewModel() {
-
-    private val _sideEffect: MutableSharedFlow<PartialMusicPlayerSideEffect> = MutableSharedFlow()
-    val sideEffect: SharedFlow<PartialMusicPlayerSideEffect> = _sideEffect
 
     private val _uiState: MutableStateFlow<PartialMusicPlayerUiState> =
         MutableStateFlow(PartialMusicPlayerUiState())
@@ -60,7 +60,6 @@ class PartialMusicPlayerViewModel @Inject constructor(
     }
 
     private fun togglePlay() {
-        musicServiceUseCases.playPauseSong(Uri.parse(uiState.value.data))
         if (uiState.value.isPlaying) pauseSong() else playSong(uiState.value.songId)
     }
 
@@ -71,14 +70,15 @@ class PartialMusicPlayerViewModel @Inject constructor(
                 playPauseIcon = R.drawable.ic_baseline_play_arrow_24
             )
         }
-        emitEffect(PartialMusicPlayerSideEffect.PauseSong)
     }
 
     private fun playSong(songId: String) {
         viewModelScope.launch(ioDispatcher) {
-            musicPlayerUseCases.getSongById(songId = songId.toInt())
+            musicPlayerUseCases.getSongById(songId = songId)
                 .onSuccess { song ->
                     withContext(mainDispatcher) {
+                        Timber.d("//// invoking play song")
+                        musicServiceClientUseCases.playSong(songId = song.id, songUri = song.path)
                         _uiState.update { currentState ->
                             currentState.copy(
                                 songId = song.id,
@@ -96,14 +96,8 @@ class PartialMusicPlayerViewModel @Inject constructor(
         }
     }
 
-    private fun emitEffect(effect: PartialMusicPlayerSideEffect) {
-        viewModelScope.launch {
-            _sideEffect.emit(effect)
-        }
-    }
-
     override fun onCleared() {
         super.onCleared()
-        musicServiceUseCases.unsubscribeMediaBrowser()
+        musicServiceClientUseCases.unsubscribeMediaBrowser()
     }
 }

@@ -100,6 +100,7 @@ class MusicServiceConnection(
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
+            Timber.d("//// play back state changed: $state")
             _playbackState.value = state ?: EMPTY_PLAYBACK_STATE
         }
 

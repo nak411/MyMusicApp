@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
+import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.MediaBrowserServiceCompat
 import com.naveed.mymusicapp.di.IoDispatcher
 import com.naveed.mymusicapp.di.MainDispatcher
@@ -44,6 +45,8 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
     private val mediaPlayer: MediaPlayer by lazy {
         MediaPlayer()
     }
+
+    private val playbackStateBuilder = PlaybackStateCompat.Builder()
 
     override fun onCreate() {
         super.onCreate()
@@ -111,6 +114,12 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         sessionToken = mediaSession.sessionToken
     }
 
+    private fun ioJob(func: () -> Unit) {
+        serviceScope.launch(ioDispatcher) {
+            func()
+        }
+    }
+
     private fun saveCurrent(songId: String?) {
         if (songId != null) {
             serviceScope.launch(ioDispatcher) {
@@ -121,26 +130,41 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         }
     }
 
+    private fun setState(state: Int) {
+        mediaSession.setPlaybackState(
+            playbackStateBuilder.setState(state, 0, 1f).build()
+        )
+    }
+
     private inner class MyMediaSessionCallback : MediaSessionCompat.Callback() {
 
-        override fun onPlayFromUri(uri: Uri, extras: Bundle) {
+        override fun onPrepareFromUri(uri: Uri, extras: Bundle) {
             val songId = extras.getString(SONG_ID)
             saveCurrent(songId = songId)
-            mediaPlayer.setDataSource(uri.toString())
-            onPrepare()
-            onPlay()
+            // We set data source on ioDispatcher since it requires disk access
+            ioJob {
+                // New data source should reset media player
+                mediaPlayer.reset()
+                mediaPlayer.setDataSource(uri.toString())
+                onPrepare()
+            }
         }
 
         override fun onPause() {
             mediaPlayer.pause()
+            setState(PlaybackStateCompat.STATE_PAUSED)
         }
 
         override fun onPrepare() {
             mediaPlayer.prepare()
+            // There is no state that directly maps to prepare. For this project buffering will
+            // be used to represent prepare state
+            setState(PlaybackStateCompat.STATE_BUFFERING)
         }
 
         override fun onPlay() {
             mediaPlayer.start()
+            setState(PlaybackStateCompat.STATE_PLAYING)
         }
     }
 

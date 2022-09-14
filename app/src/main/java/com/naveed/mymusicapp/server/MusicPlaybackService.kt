@@ -4,7 +4,6 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.media.MediaBrowserCompat
-import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.MediaBrowserServiceCompat
@@ -19,6 +18,16 @@ import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * This serves as the server component for the application. This service is responsible for
+ * playing music, providing music files and managing playback state.
+ * Having a service allows us to keep the music playing even when the user has backed out
+ * of the application.
+ * Note that this is a very simple implementation.  It uses a flat list of media items instead
+ * of a tree structure.
+ * For simplicity, only playback is implemented, features such search, browsing etc are out
+ * of the scope for this project.
+ */
 @AndroidEntryPoint
 class MusicPlaybackService : MediaBrowserServiceCompat() {
 

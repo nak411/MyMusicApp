@@ -9,7 +9,7 @@ import com.naveed.mymusicapp.core.data.data_sources.local.DeviceStorageMusicData
 import com.naveed.mymusicapp.features.common.domain.MusicServiceClientUseCases
 import com.naveed.mymusicapp.features.common.domain.usecases.PlaySong
 import com.naveed.mymusicapp.features.common.domain.usecases.UnsubscribeMediaBrowser
-import com.naveed.mymusicapp.features.player.domain.GetSongForId
+import com.naveed.mymusicapp.features.player.domain.usecases.GetSongForId
 import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.songlist.domain.LoadSongs
 import com.naveed.mymusicapp.features.songlist.domain.SongListUseCases

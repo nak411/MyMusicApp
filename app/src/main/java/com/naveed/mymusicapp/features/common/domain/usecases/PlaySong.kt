@@ -16,7 +16,7 @@ import timber.log.Timber
 class PlaySong(
     private val musicServiceConnection: MusicServiceConnection
 ) {
-
+    @Volatile
     private var hasObserver: Boolean = false
 
     suspend operator fun invoke(songId: String, songUri: String) {

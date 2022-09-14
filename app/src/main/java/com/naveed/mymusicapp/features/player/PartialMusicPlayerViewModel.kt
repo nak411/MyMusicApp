@@ -77,7 +77,6 @@ class PartialMusicPlayerViewModel @Inject constructor(
             musicPlayerUseCases.getSongById(songId = songId)
                 .onSuccess { song ->
                     withContext(mainDispatcher) {
-                        Timber.d("//// invoking play song")
                         musicServiceClientUseCases.playSong(songId = song.id, songUri = song.path)
                         _uiState.update { currentState ->
                             currentState.copy(

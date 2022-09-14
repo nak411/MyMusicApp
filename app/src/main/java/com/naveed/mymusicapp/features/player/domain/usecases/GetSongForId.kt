@@ -1,4 +1,4 @@
-package com.naveed.mymusicapp.features.player.domain
+package com.naveed.mymusicapp.features.player.domain.usecases
 
 import com.naveed.mymusicapp.core.data.api.MusicRepository
 import com.naveed.mymusicapp.core.data.model.Song

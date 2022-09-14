@@ -6,12 +6,6 @@ sealed interface PartialMusicPlayerEvent {
 
     object ClickedPausePlay: PartialMusicPlayerEvent
 
-    data class LoadState(
-        val title: String,
-        val artist: String,
-        val thumbnail: String,
-        val isPlaying: Boolean,
-        val playPauseIcon: Int
-        ) : PartialMusicPlayerEvent
+    object  LoadCurrentState : PartialMusicPlayerEvent
 
 }

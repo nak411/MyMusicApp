@@ -24,7 +24,7 @@ class PartialMusicPlayerFragment : Fragment() {
     private val binding: FragmentPartialMusicPlayerBinding get() = _binding!!
 
     // Since the music player is present everywhere, it is scoped to the activity
-    // view model
+    // level
     private val viewModel: PartialMusicPlayerViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

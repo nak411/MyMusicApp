@@ -96,6 +96,8 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
             isActive = false
             release()
         }
+        // Release media resources
+        mediaPlayer.release()
         // Cancel coroutines when the service is going away
         serviceJob.cancel()
     }
@@ -109,10 +111,21 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         sessionToken = mediaSession.sessionToken
     }
 
+    private fun saveCurrent(songId: String?) {
+        if (songId != null) {
+            serviceScope.launch(ioDispatcher) {
+                musicServiceUseCases.saveCurrentlyPlayingSong(songId)
+            }
+        } else {
+            Timber.e("null song id provided for save current")
+        }
+    }
+
     private inner class MyMediaSessionCallback : MediaSessionCompat.Callback() {
 
-        override fun onPlayFromUri(uri: Uri, extras: Bundle?) {
-            Timber.i("///", "Called play from uri: $uri")
+        override fun onPlayFromUri(uri: Uri, extras: Bundle) {
+            val songId = extras.getString(SONG_ID)
+            saveCurrent(songId = songId)
             mediaPlayer.setDataSource(uri.toString())
             onPrepare()
             onPlay()
@@ -135,5 +148,6 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         private const val TAG = "MusicService"
         private const val MEDIA_ROOT_ID = "media_root_id"
         private const val EMPTY_MEDIA_ROOT_ID = "empty_root_id"
+        const val SONG_ID = "songId"
     }
 }

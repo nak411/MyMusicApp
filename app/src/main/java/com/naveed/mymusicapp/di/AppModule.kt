@@ -2,10 +2,14 @@ package com.naveed.mymusicapp.di
 
 import android.content.ComponentName
 import android.content.Context
+import android.preference.PreferenceManager
 import com.naveed.mymusicapp.core.data.api.MusicRepository
 import com.naveed.mymusicapp.core.data.api.MusicRepositoryImpl
 import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource
 import com.naveed.mymusicapp.core.data.data_sources.local.DeviceStorageMusicDataSource
+import com.naveed.mymusicapp.features.common.domain.MusicServiceClientUseCases
+import com.naveed.mymusicapp.features.common.domain.usecases.PlaySong
+import com.naveed.mymusicapp.features.common.domain.usecases.UnsubscribeMediaBrowser
 import com.naveed.mymusicapp.features.player.domain.GetSongForId
 import com.naveed.mymusicapp.features.player.domain.MusicPlayerUseCases
 import com.naveed.mymusicapp.features.songlist.domain.LoadSongs
@@ -14,8 +18,7 @@ import com.naveed.mymusicapp.server.MusicPlaybackService
 import com.naveed.mymusicapp.server.MusicServiceConnection
 import com.naveed.mymusicapp.server.domain.MusicServiceUseCases
 import com.naveed.mymusicapp.server.domain.usecases.GetMediaItems
-import com.naveed.mymusicapp.server.domain.usecases.PlayPauseSong
-import com.naveed.mymusicapp.server.domain.usecases.UnsubscribeMediaBrowser
+import com.naveed.mymusicapp.server.domain.usecases.SaveCurrentlyPlayingSong
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,7 +48,8 @@ object AppModule {
         @ApplicationContext context: Context
     ): MusicDataSource {
         return DeviceStorageMusicDataSource(
-            context = context
+            context = context,
+            preferences = context.getSharedPreferences("my_music_app_prefs", Context.MODE_PRIVATE)
         )
     }
 
@@ -84,14 +88,22 @@ object AppModule {
     }
 
     @Provides
-    fun provideMusicServiceUseCases(
-        musicRepository: MusicRepository,
+    fun provideMusicClientUseCases(
         musicServiceConnection: MusicServiceConnection
+    ) : MusicServiceClientUseCases {
+        return MusicServiceClientUseCases(
+            playSong = PlaySong(musicServiceConnection = musicServiceConnection),
+            unsubscribeMediaBrowser = UnsubscribeMediaBrowser(musicServiceConnection = musicServiceConnection)
+        )
+    }
+
+    @Provides
+    fun provideMusicServiceUseCases(
+        musicRepository: MusicRepository
     ): MusicServiceUseCases {
         return MusicServiceUseCases(
             getMediaItems = GetMediaItems(musicRepository = musicRepository),
-            playPauseSong = PlayPauseSong(musicServiceConnection = musicServiceConnection),
-            unsubscribeMediaBrowser = UnsubscribeMediaBrowser(musicServiceConnection = musicServiceConnection)
+            saveCurrentlyPlayingSong = SaveCurrentlyPlayingSong(musicRepository = musicRepository)
         )
     }
 }

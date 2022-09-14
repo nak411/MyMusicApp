@@ -91,7 +91,6 @@ class PartialMusicPlayerViewModel @Inject constructor(
                                 showMusicPlayer = true
                             )
                         }
-                        emitEffect(PartialMusicPlayerSideEffect.PlaySong)
                     }
                 }
         }

@@ -29,11 +29,11 @@ class DeviceStorageMusicDataSource(
         return Result.success(songs)
     }
 
-    override suspend fun getSongById(id: Int): Result<Song> {
+    override suspend fun getSongById(id: String): Result<Song> {
         val uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
         val projection = projection()
         val selection = "${MediaStore.Audio.Media._ID}=?"
-        val selectionArgs = arrayOf(id.toString())
+        val selectionArgs = arrayOf(id)
         val songs = loadSongs(
             uri = uri,
             projection = projection,

@@ -11,7 +11,7 @@ class MusicRepositoryImpl(
         return localDataSource.getSongs()
     }
 
-    override suspend fun getSongById(id: Int): Result<Song> {
+    override suspend fun getSongById(id: String): Result<Song> {
         return localDataSource.getSongById(id = id)
     }
 

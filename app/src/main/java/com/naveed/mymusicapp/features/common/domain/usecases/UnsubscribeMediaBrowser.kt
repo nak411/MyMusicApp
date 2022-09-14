@@ -1,4 +1,4 @@
-package com.naveed.mymusicapp.server.domain.usecases
+package com.naveed.mymusicapp.features.common.domain.usecases
 
 import com.naveed.mymusicapp.server.MusicServiceConnection
 

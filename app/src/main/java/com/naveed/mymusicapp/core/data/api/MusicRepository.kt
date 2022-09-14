@@ -11,11 +11,11 @@ interface MusicRepository {
 
     /**
      * Retrieves a [Song] using the provided id
-     * @param id an integer representing the id of the song to retrieve
+     * @param id a String representing the id of the song to retrieve
      *
      * @return the song for the provided id or an exception if the song was not found
      */
-    suspend fun getSongById(id: Int): Result<Song>
+    suspend fun getSongById(id: String): Result<Song>
 
     /**
      * Saves the provided song as the currently playing song.  Any existing currently playing

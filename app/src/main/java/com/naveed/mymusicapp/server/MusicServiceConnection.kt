@@ -2,7 +2,6 @@ package com.naveed.mymusicapp.server
 
 import android.content.ComponentName
 import android.content.Context
-import android.media.session.PlaybackState
 import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -120,5 +119,6 @@ class MusicServiceConnection(
         val EMPTY_PLAYBACK_STATE: PlaybackStateCompat = PlaybackStateCompat.Builder()
             .setState(PlaybackStateCompat.STATE_NONE, 0, 0f)
             .build()
+        const val SONG_ID = MusicPlaybackService.SONG_ID
     }
 }

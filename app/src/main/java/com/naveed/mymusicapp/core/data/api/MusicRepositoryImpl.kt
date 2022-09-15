@@ -19,7 +19,7 @@ class MusicRepositoryImpl(
         return localDataSource.saveCurrentlyPlaying(song = song)
     }
 
-    override fun getCurrentlyPLaying(): Result<Song> {
+    override suspend fun getCurrentlyPLaying(): Result<Song> {
         return localDataSource.getCurrentlyPLaying()
     }
 }

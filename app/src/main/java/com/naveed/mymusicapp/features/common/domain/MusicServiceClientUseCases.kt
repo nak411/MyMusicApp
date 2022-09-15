@@ -1,6 +1,9 @@
 package com.naveed.mymusicapp.features.common.domain
 
+import com.naveed.mymusicapp.features.common.domain.usecases.GetCurrentlyPlaying
+import com.naveed.mymusicapp.features.common.domain.usecases.ObserveServiceState
 import com.naveed.mymusicapp.features.common.domain.usecases.PlaySong
+import com.naveed.mymusicapp.features.common.domain.usecases.TogglePausePlay
 import com.naveed.mymusicapp.features.common.domain.usecases.UnsubscribeMediaBrowser
 import com.naveed.mymusicapp.server.MusicPlaybackService
 /**
@@ -8,5 +11,8 @@ import com.naveed.mymusicapp.server.MusicPlaybackService
  */
 class MusicServiceClientUseCases(
     val playSong: PlaySong,
-    val unsubscribeMediaBrowser: UnsubscribeMediaBrowser
+    val unsubscribeMediaBrowser: UnsubscribeMediaBrowser,
+    val getCurrentlyPlaying: GetCurrentlyPlaying,
+    val togglePausePlay: TogglePausePlay,
+    val observeServiceState: ObserveServiceState
 )

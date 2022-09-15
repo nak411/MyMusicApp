@@ -6,7 +6,9 @@ import android.support.v4.media.MediaBrowserCompat
 import android.support.v4.media.session.MediaControllerCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import androidx.media.MediaBrowserServiceCompat
+import com.naveed.mymusicapp.ext.observe
 import com.naveed.mymusicapp.ext.subscribe
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import timber.log.Timber
@@ -31,6 +33,10 @@ class MusicServiceConnection(
         EMPTY_PLAYBACK_STATE
     )
 
+    val currentMediaItem: StateFlow<MediaBrowserCompat.MediaItem?> get() = _currentMediaItem
+    private val _currentMediaItem: MutableStateFlow<MediaBrowserCompat.MediaItem?> =
+        MutableStateFlow(null)
+
     private val connectionCallback: MediaBrowserCompat.ConnectionCallback =
         MediaBrowserConnectionCallback(context = context)
     private val controllerCallback: MediaControllerCompat.Callback = MediaControllerCallback()
@@ -52,8 +58,17 @@ class MusicServiceConnection(
     /**
      * Subscribe to receive the list of media items that the service is managing
      */
-    suspend fun subscribe(parentId: String = "/") : List<MediaBrowserCompat.MediaItem> {
-        return mediaBrowser.subscribe(parentId)
+    suspend fun subscribe(parentId: String = "/"): List<MediaBrowserCompat.MediaItem> {
+        val item = mediaBrowser.subscribe(parentId)
+//        if (parentId == RECENT_SONG && item.size == 1) {
+//            // Emit the recent item to notify observers
+//            _currentMediaItem.emit(item.first())
+//        }
+        return item
+    }
+
+     fun observeCurrentlyPlaying(): Flow<List<MediaBrowserCompat.MediaItem>> {
+        return mediaBrowser.observe(RECENT_SONG)
     }
 
     /**
@@ -100,7 +115,6 @@ class MusicServiceConnection(
     private inner class MediaControllerCallback : MediaControllerCompat.Callback() {
 
         override fun onPlaybackStateChanged(state: PlaybackStateCompat?) {
-            Timber.d("//// play back state changed: $state")
             _playbackState.value = state ?: EMPTY_PLAYBACK_STATE
         }
 
@@ -121,5 +135,6 @@ class MusicServiceConnection(
             .setState(PlaybackStateCompat.STATE_NONE, 0, 0f)
             .build()
         const val SONG_ID = MusicPlaybackService.SONG_ID
+        const val RECENT_SONG = MusicPlaybackService.RECENT_SONG
     }
 }

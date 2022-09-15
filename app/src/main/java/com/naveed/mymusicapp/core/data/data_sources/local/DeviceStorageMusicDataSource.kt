@@ -60,7 +60,7 @@ class DeviceStorageMusicDataSource(
         return Result.success(true)
     }
 
-    override fun getCurrentlyPLaying(): Result<Song> {
+    override suspend fun getCurrentlyPLaying(): Result<Song> {
         val id = preferences.getString(SONG_ID, null)
         val title = preferences.getString(TITLE, null)
         val artist = preferences.getString(ARTIST, null)

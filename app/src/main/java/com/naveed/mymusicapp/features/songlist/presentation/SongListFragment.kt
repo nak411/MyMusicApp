@@ -113,6 +113,9 @@ class SongListFragment : Fragment(), StoragePermissionHandler by StoragePermissi
                     sideEffect.songId
                 )
             )
+//            SongListSideEffect.LoadPlayer -> playerViewModel.onEvent(
+//                PartialMusicPlayerEvent.LoadCurrentState
+//            )
         }
     }
 

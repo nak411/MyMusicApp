@@ -15,6 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -84,21 +85,53 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
+        var resultSent = false
         val job = serviceScope.launch(ioDispatcher) {
-            musicServiceUseCases.getMediaItems()
-                .onSuccess { children ->
-                    result.sendResult(children.toMutableList())
-                }
-                .onFailure {
-                    result.sendResult(null)
-                }
+            if (parentId == RECENT_SONG) {
+                fetchRecent(result)
+            } else {
+                fetchAll(result)
+            }
+
+        }
+        job.invokeOnCompletion {
+            resultSent = true
         }
         // If the results are not ready, the service must "detach" the results before
         // the method returns. After the source is ready, the lambda above will run,
         // and the caller will be notified that the results are ready.
-        if (job.isActive) {
+        if (!resultSent) {
             result.detach()
         }
+    }
+
+    private suspend fun fetchAll(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        musicServiceUseCases.getMediaItems()
+            .onSuccess { children ->
+                withContext(mainDispatcher){
+                    result.sendResult(children.toMutableList())
+                }
+            }
+            .onFailure {
+                withContext(mainDispatcher) {
+                    result.sendResult(null)
+                }
+            }
+    }
+
+    private suspend fun fetchRecent(result: Result<MutableList<MediaBrowserCompat.MediaItem>>) {
+        musicServiceUseCases.getRecentMediaItem()
+            .onSuccess { item ->
+                withContext(mainDispatcher) {
+                    // Ensure that results are always sent on main dispatcher
+                    result.sendResult(mutableListOf(item))
+                }
+            }
+            .onFailure {
+                withContext(mainDispatcher) {
+                    result.sendResult(null)
+                }
+            }
     }
 
     override fun onDestroy() {
@@ -121,6 +154,17 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         }
         // Set the session's token so that client activities can communicate with it.
         sessionToken = mediaSession.sessionToken
+
+        // Load recent into media player
+        serviceScope.launch(ioDispatcher) {
+            musicServiceUseCases.getRecentMediaItem().onSuccess {
+                if (it.description.mediaUri != null) {
+                    mediaPlayer.reset()
+                    mediaPlayer.setDataSource(it.description.mediaUri.toString())
+                    mediaPlayer.prepare()
+                }
+            }
+        }
     }
 
     private fun ioJob(func: () -> Unit) {
@@ -174,13 +218,13 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
         override fun onPlay() {
             mediaPlayer.start()
             setState(PlaybackStateCompat.STATE_PLAYING)
+            notifyChildrenChanged(RECENT_SONG)
         }
     }
 
     companion object {
         private const val TAG = "MusicService"
-        private const val MEDIA_ROOT_ID = "media_root_id"
-        private const val EMPTY_MEDIA_ROOT_ID = "empty_root_id"
+        const val RECENT_SONG = "_recent_song_"
         const val SONG_ID = "songId"
     }
 }

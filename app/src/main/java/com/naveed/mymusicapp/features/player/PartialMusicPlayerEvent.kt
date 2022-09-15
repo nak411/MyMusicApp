@@ -6,6 +6,6 @@ sealed interface PartialMusicPlayerEvent {
 
     object ClickedPausePlay: PartialMusicPlayerEvent
 
-    object  LoadCurrentState : PartialMusicPlayerEvent
+    // object  LoadCurrentState : PartialMusicPlayerEvent
 
 }

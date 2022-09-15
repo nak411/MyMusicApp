@@ -27,5 +27,5 @@ interface MusicRepository {
     /**
      * Retrieves the currently playing song or null if nothing was previously played
      */
-    fun getCurrentlyPLaying() : Result<Song>
+    suspend fun getCurrentlyPLaying() : Result<Song>
 }

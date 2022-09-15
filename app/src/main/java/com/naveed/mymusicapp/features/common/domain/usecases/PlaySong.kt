@@ -33,7 +33,6 @@ class PlaySong(
             musicServiceConnection.playbackState.collect { state ->
                 // Attach and observer for media state
                 if (state.state == PlaybackStateCompat.STATE_BUFFERING) {
-                    Timber.d("//// Calling play")
                     controls.play()
                 }
             }

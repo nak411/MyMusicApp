@@ -8,6 +8,10 @@ import com.naveed.mymusicapp.server.MusicServiceConnection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 
+/**
+ * Provides observable api for monitoring the currently playing song.  The view model
+ * can bind to this state to properly update the ui as the song state changes.
+ */
 class ObserveServiceState(
     musicServiceConnection: MusicServiceConnection
 ) {

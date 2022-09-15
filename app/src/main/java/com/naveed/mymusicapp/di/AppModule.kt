@@ -7,7 +7,6 @@ import com.naveed.mymusicapp.core.data.api.MusicRepositoryImpl
 import com.naveed.mymusicapp.core.data.data_sources.MusicDataSource
 import com.naveed.mymusicapp.core.data.data_sources.local.DeviceStorageMusicDataSource
 import com.naveed.mymusicapp.features.common.domain.MusicServiceClientUseCases
-import com.naveed.mymusicapp.features.common.domain.usecases.GetCurrentlyPlaying
 import com.naveed.mymusicapp.features.common.domain.usecases.ObserveServiceState
 import com.naveed.mymusicapp.features.common.domain.usecases.PlaySong
 import com.naveed.mymusicapp.features.common.domain.usecases.TogglePausePlay
@@ -102,7 +101,6 @@ object AppModule {
         return MusicServiceClientUseCases(
             playSong = PlaySong(musicServiceConnection = musicServiceConnection),
             unsubscribeMediaBrowser = UnsubscribeMediaBrowser(musicServiceConnection = musicServiceConnection),
-            getCurrentlyPlaying = GetCurrentlyPlaying(musicServiceConnection = musicServiceConnection),
             togglePausePlay = TogglePausePlay(musicServiceConnection = musicServiceConnection),
             observeServiceState = ObserveServiceState(musicServiceConnection = musicServiceConnection)
         )

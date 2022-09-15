@@ -33,10 +33,6 @@ class MusicServiceConnection(
         EMPTY_PLAYBACK_STATE
     )
 
-    val currentMediaItem: StateFlow<MediaBrowserCompat.MediaItem?> get() = _currentMediaItem
-    private val _currentMediaItem: MutableStateFlow<MediaBrowserCompat.MediaItem?> =
-        MutableStateFlow(null)
-
     private val connectionCallback: MediaBrowserCompat.ConnectionCallback =
         MediaBrowserConnectionCallback(context = context)
     private val controllerCallback: MediaControllerCompat.Callback = MediaControllerCallback()
@@ -59,12 +55,7 @@ class MusicServiceConnection(
      * Subscribe to receive the list of media items that the service is managing
      */
     suspend fun subscribe(parentId: String = "/"): List<MediaBrowserCompat.MediaItem> {
-        val item = mediaBrowser.subscribe(parentId)
-//        if (parentId == RECENT_SONG && item.size == 1) {
-//            // Emit the recent item to notify observers
-//            _currentMediaItem.emit(item.first())
-//        }
-        return item
+        return mediaBrowser.subscribe(parentId)
     }
 
      fun observeCurrentlyPlaying(): Flow<List<MediaBrowserCompat.MediaItem>> {

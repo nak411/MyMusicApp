@@ -61,6 +61,9 @@ class MusicPlaybackService : MediaBrowserServiceCompat() {
     override fun onCreate() {
         super.onCreate()
         setupSession()
+        mediaPlayer.setOnCompletionListener {
+            setState(PlaybackStateCompat.STATE_PAUSED)
+        }
     }
 
     /**
